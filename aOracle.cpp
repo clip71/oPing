@@ -66,13 +66,11 @@ int aOracle::GetErrorText(char* pszError, int nSize)
 int aOracle::Init()
 {
     // Initialize OCI
-    int nRC = OCIInitialize((ub4) OCI_DEFAULT | OCI_THREADED/* | OCI_EVENTS*/,
-        (dvoid *)0, (dvoid * (*)(dvoid *, size_t)) 0,
-        (dvoid * (*)(dvoid *, dvoid *, size_t))0,
-        (void (*)(dvoid *, dvoid *)) 0 );
+    int nRC = OCIEnvCreate(&m_pEnv, (ub4) OCI_DEFAULT,
+        (dvoid *) 0, (dvoid * (*)(dvoid *,size_t)) 0,
+        (dvoid * (*)(dvoid *, dvoid *, size_t)) 0,
+        (void (*)(dvoid *, dvoid *)) 0, (size_t) 0, (dvoid **) 0);
 
-    // Initialize evironment
-    nRC = OCIEnvInit((OCIEnv**)&m_pEnv, OCI_DEFAULT, (size_t)0, (dvoid**)0);
     // service context
     m_pSvc = (OCISvcCtx*)HandleAlloc(OCI_HTYPE_SVCCTX);
     // error context
