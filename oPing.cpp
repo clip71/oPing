@@ -1,7 +1,7 @@
 /*
  * oPing - Analog of tnsping
  *
- * version 1.0.0 - 30.09.2014
+ * version 1.0.8 - 30.09.2014
  *
  * Copyright (C) 2014 OJSC Introtest, Tyumenska region, Surgut
  * Konstantin Slabouzov <slabouzov@introtest.com>
