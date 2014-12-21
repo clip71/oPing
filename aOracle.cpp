@@ -8,6 +8,7 @@ aOracle::aOracle(void)
     m_pEnv = NULL;
     m_pErr = NULL;
     m_pSvc = NULL;
+    m_pSrv = NULL;
 
     m_szUser[0] = '\0';
     m_nRC = OCI_SUCCESS;
@@ -73,8 +74,12 @@ int aOracle::Init()
 
     // service context
     m_pSvc = (OCISvcCtx*)HandleAlloc(OCI_HTYPE_SVCCTX);
+
     // error context
     m_pErr = (OCIError*)HandleAlloc(OCI_HTYPE_ERROR);
+
+    // server contexts
+    m_pSrv = (OCIServer*)HandleAlloc(OCI_HTYPE_SERVER);
 
     return OCI_SUCCESS;
 }
@@ -82,6 +87,12 @@ int aOracle::Init()
 int aOracle::Shut()
 {
     int nRC = Logoff();
+
+    if (m_pSrv)
+    {
+        nRC = OCIHandleFree((dvoid *) m_pSrv, OCI_HTYPE_SERVER);
+        m_pSrv = NULL;
+    }
 
     if (m_pErr)
     {
@@ -102,9 +113,26 @@ int aOracle::Shut()
     return nRC;
 }
 
+
+int aOracle::ServerAttach(char* pszHost)
+{
+    char szBuff[256];
+    int nRC = OCIServerAttach(m_pSrv, m_pErr, (text *)pszHost, strlen(pszHost), 0);
+    if (nRC == OCI_ERROR)
+    {
+        // получим реальный код ошибки
+        m_nRC = GetErrorText(szBuff, sizeof szBuff);
+    }
+
+    return nRC;
+}
+
+
+
 int aOracle::Logon(char* pszUser, char* pszPassword, char* pszHost)
 {
-    char szPassword[64], szHost[64];
+    char szBuff[256], szPassword[64], szHost[64];
+    int nRC;
 
 	strcpy_s(m_szUser, sizeof m_szUser, pszUser);
     char* pChr = strchr(m_szUser, '@');
@@ -132,8 +160,23 @@ int aOracle::Logon(char* pszUser, char* pszPassword, char* pszHost)
 		strncpy_s(szPassword, sizeof szPassword, pszPassword, sizeof szPassword);
 	}
 
+    nRC = ServerAttach(pszHost);
+    if (nRC < 0) { // OCI_ERROR
+        nRC = GetErrorText(szBuff, sizeof szBuff);
+        return nRC;
+    }
+
+    // set attribute server context in the service context
+    nRC = OCIAttrSet( (dvoid *) m_pSvc, OCI_HTYPE_SVCCTX, (dvoid *)m_pSrv,
+                     (ub4) 0, OCI_ATTR_SERVER, (OCIError *) m_pErr);
+    if (nRC < 0) { // OCI_ERROR
+        nRC = GetErrorText(szBuff, sizeof szBuff);
+        OCIServerDetach(m_pSrv, m_pErr, OCI_DEFAULT);
+        return nRC;
+    }
+
     //
-    int nRC = OCILogon(m_pEnv, m_pErr, &m_pSvc,
+    nRC = OCILogon(m_pEnv, m_pErr, &m_pSvc,
         (OraText*)m_szUser, (ub4)strlen(m_szUser),
         (OraText*)szPassword, (ub4)strlen(szPassword),
         (OraText*)szHost, (ub4)strlen(szHost));

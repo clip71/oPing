@@ -56,15 +56,23 @@ public:
     int GetErrorText(char* pszError, int nSize);
     int Init();
     int Shut();
-	int Logon(char* pszUser, char* pszPassword, char* pszHost);
+    int ServerAttach(char* pszHost);
+    int Logon(char* pszUser, char* pszPassword, char* pszHost);
     int Logoff();
+
+    inline int AttrSetSrv(ub4 nAttr, void* pData, int nLen) {
+        return OCIAttrSet(m_pSrv, OCI_HTYPE_SERVER, pData, (ub4) nLen, (ub4) nAttr, m_pErr);
+    };
+    inline int Break() { return OCIBreak(m_pSvc, m_pErr); };
+    inline int Reset() { return OCIReset(m_pSvc, m_pErr); };
 
 protected:
     void* HandleAlloc(int nHType);
-
+public:
     OCIEnv* m_pEnv;
     OCIError* m_pErr;
     OCISvcCtx* m_pSvc;
+    OCIServer* m_pSrv;
 
     char m_szUser[64];
     char m_szError[128];

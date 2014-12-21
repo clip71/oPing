@@ -1,7 +1,7 @@
 /*
  * oPing - Analog of tnsping
  *
- * version 1.0.8 - 30.09.2014
+ * version 1.0.9 - 21.12.2014
  *
  * Copyright (C) 2014 OJSC Introtest, Tyumenska region, Surgut
  * Konstantin Slabouzov <slabouzov@introtest.com>
@@ -17,6 +17,23 @@
 #include "aOracle.h"
 
 static char szConnect[1024];
+static aOracle lda;
+
+
+BOOL WINAPI ControlHandler(DWORD dwCtrlType)
+{
+	switch (dwCtrlType)
+	{
+	case CTRL_C_EVENT:		// SERVICE_CONTROL_STOP in debug mode
+	case CTRL_BREAK_EVENT:	// use Ctrl+C or Ctrl+Break to simulate
+    case CTRL_CLOSE_EVENT:
+        _putts("Ctrl+C signaled");
+        ExitProcess(0);
+        exit(0);
+		return TRUE;
+	}
+	return FALSE;
+}
 
 
 void skipSpaces(char** pPointer)
@@ -134,7 +151,6 @@ int _tmain(int argc, _TCHAR* argv[])
         return 1;
     }
 
-    aOracle lda;
     char szError[512];
     DWORD dwTics;
     int nRC;
@@ -149,12 +165,17 @@ int _tmain(int argc, _TCHAR* argv[])
     if (szConnect[0])
         _tprintf("Attempting to contact %s\n", szConnect);
 
+	SetConsoleCtrlHandler(ControlHandler, TRUE);
+
     //
     for (int n=0; n<nCount; n++)
     {
         dwTics = GetTickCount();
 
-        nRC = lda.Logon("x", "x", argv[1]);
+        //int nNonBlock = 1;
+        //nRC = lda.AttrSetEnv(OCI_ATTR_NONBLOCKING_MODE, &nNonBlock, sizeof nNonBlock);
+        //nRC = lda.GetErrorText(szError, sizeof szError);
+        nRC = lda.ServerAttach(argv[1]);
 
         dwTics = GetTickCount() - dwTics;
 
