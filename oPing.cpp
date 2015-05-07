@@ -194,6 +194,7 @@ int _tmain(int argc, _TCHAR* argv[])
                 case OCI_TNS_CONNECT_TIMEOUT_OCCURRED: // при таймауте цикл не прерываем
                     break;
                 case OCI_FATAL_TWO_TASK_COMMUNICATION_PROTOCOL: // ?
+                case OCI_TNS_PACKET_CHECKSUM_FAILURE:
                     break;
                 default:
                     nCount = 0; // прервем цикл
