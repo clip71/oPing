@@ -22,6 +22,7 @@
 #define OCI_FETCHED_COLUMN_VALUE_IS_NULL	        (1405)
 #define OCI_FETCHED_COLUMN_VALUE_WAS_TRUNCATED      (1406)
 #define OCI_CHILD_RECORD_FOUND			            (2292)
+#define OCI_FATAL_TWO_TASK_COMMUNICATION_PROTOCOL   (3106)
 #define OCI_END_OF_FILE_ON_COMMUNICATION_CHANNEL    (3113)
 #define OCI_NOT_CONNECTED                           (3114)
 #define OCI_OBJECT_DOES_NOT_EXIST                   (4043)
@@ -57,6 +58,7 @@ public:
     int Init();
     int Shut();
     int ServerAttach(char* pszHost);
+    int ServerDetach();
     int Logon(char* pszUser, char* pszPassword, char* pszHost);
     int Logoff();
 

@@ -1,7 +1,7 @@
 /*
  * oPing - Analog of tnsping
  *
- * version 1.0.9 - 21.12.2014
+ * version 1.1.10 - 07.05.2015
  *
  * Copyright (C) 2014 OJSC Introtest, Tyumenska region, Surgut
  * Konstantin Slabouzov <slabouzov@introtest.com>
@@ -182,6 +182,7 @@ int _tmain(int argc, _TCHAR* argv[])
         switch (nRC) {
         case OCI_SUCCESS:
             strcpy_s(szError, sizeof szError, "OK");
+            lda.ServerDetach();
             break;
         default:
             if (nRC == -1) {
@@ -191,6 +192,8 @@ int _tmain(int argc, _TCHAR* argv[])
                     strcpy_s(szError, sizeof szError, "OK");
                     break;
                 case OCI_TNS_CONNECT_TIMEOUT_OCCURRED: // при таймауте цикл не прерываем
+                    break;
+                case OCI_FATAL_TWO_TASK_COMMUNICATION_PROTOCOL: // ?
                     break;
                 default:
                     nCount = 0; // прервем цикл

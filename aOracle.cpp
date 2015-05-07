@@ -128,6 +128,20 @@ int aOracle::ServerAttach(char* pszHost)
 }
 
 
+int aOracle::ServerDetach()
+{
+    char szBuff[256];
+    int nRC = OCIServerDetach(m_pSrv, m_pErr, 0);
+    if (nRC == OCI_ERROR)
+    {
+        // получим реальный код ошибки
+        m_nRC = GetErrorText(szBuff, sizeof szBuff);
+    }
+
+    return nRC;
+}
+
+
 
 int aOracle::Logon(char* pszUser, char* pszPassword, char* pszHost)
 {
