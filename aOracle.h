@@ -33,9 +33,13 @@
 
 #define OCI_TNS_COULD_NOT_RESOLVE_SERVICE_NAME      (12154)
 #define OCI_TNS_CONNECT_TIMEOUT_OCCURRED            (12170)
+#define OCI_TNS_ILLEGAL_ADDRESS_PARAMETERS          (12533)
 #define OCI_TNS_OPERATION_TIMED_OUT                 (12535)
+#define OCI_TNS_LOST_CONTACT                        (12547)
 #define OCI_TNS_PROTOCOL_ADAPTER_ERROR              (12560)
 #define OCI_TNS_PACKET_CHECKSUM_FAILURE             (12569)
+#define OCI_TNS_PACKET_READER_FAILURE               (12570)
+#define OCI_TNS_BAD_PACKET                          (12592)
 #define OCI_ALREADY_CONNECTED_TO_A_SERVER           (24309)
 #define OCI_PASSWORD_WILL_EXPIRE                    (28002)
 

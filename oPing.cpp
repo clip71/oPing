@@ -1,9 +1,9 @@
 /*
  * oPing - Analog of tnsping
  *
- * version 1.1.10 - 07.05.2015
+ * version 1.1.11 - 18.05.2015
  *
- * Copyright (C) 2014 OJSC Introtest, Tyumenska region, Surgut
+ * Copyright (C) 2014-15 OJSC Introtest, Tyumenska region, Surgut
  * Konstantin Slabouzov <slabouzov@introtest.com>
  *
  */
@@ -194,7 +194,11 @@ int _tmain(int argc, _TCHAR* argv[])
                 case OCI_TNS_CONNECT_TIMEOUT_OCCURRED: // при таймауте цикл не прерываем
                     break;
                 case OCI_FATAL_TWO_TASK_COMMUNICATION_PROTOCOL: // ?
+                case OCI_TNS_ILLEGAL_ADDRESS_PARAMETERS: // 12533
+                case OCI_TNS_LOST_CONTACT: // 12547
                 case OCI_TNS_PACKET_CHECKSUM_FAILURE:
+                case OCI_TNS_PACKET_READER_FAILURE:
+                case OCI_TNS_BAD_PACKET:
                     break;
                 default:
                     nCount = 0; // прервем цикл
@@ -208,6 +212,7 @@ int _tmain(int argc, _TCHAR* argv[])
             lda.Logoff();
 
         _tprintf("%s (%d msec)\n", szError, dwTics);
+        Sleep(1000);
     }
 
 	return 0;
